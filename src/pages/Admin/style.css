@@ -1,0 +1,16 @@
+.content {
+    max-width: 1120px;
+    margin: 0 auto;
+
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+h1{
+    width: 100%;
+    text-align: center;
+}
+
+.tableContainer{
+    margin-top: 3rem;
+}
