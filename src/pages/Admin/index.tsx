@@ -1,109 +1,120 @@
-import { useState } from 'react';
-import {
-    Input, Table, Button, Popconfirm, message, Tooltip, Modal, Form,
-    Radio,
-    Select,
-    Cascader,
-    DatePicker,
-    InputNumber,
-    TreeSelect,
-    Switch,
-} from 'antd';
+import { FormEvent, useContext, useState } from 'react';
+import { Input, Table, Button, Popconfirm, message, Tooltip, Modal, Form, InputNumber } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import './style.css';
 
+
+import { db } from '../../firebase-config'
+import { collection, getDocs, addDoc, doc, deleteDoc } from '@firebase/firestore';
+import { CarsContext } from '../../context/CarsContext';
+
 const { Search } = Input;
+
+interface Car {
+    id: string;
+    brand: string;
+    model: string;
+    year: string;
+    price: number;
+    color: string;
+    mileage: number;
+    licensePlate: string;
+    city: string;
+    img1: string;
+    img2: string;
+    img3: string;
+    created_at: Date;
+}
 
 function confirm(e: any) {
     console.log(e);
     message.success('Anúncio deletado com sucesso');
 }
 
+export function Admin() {
+    const cars = useContext(CarsContext)
 
-const columns = [
-    {
-        title: 'Marca',
-        dataIndex: 'brand',
-        key: 'brand',
-    },
-    {
-        title: 'Modelo',
-        dataIndex: 'model',
-        key: 'model',
-    },
-    {
-        title: 'Ano',
-        dataIndex: 'year',
-        key: 'year',
-    },
-    {
-        title: 'Preço',
-        key: 'price',
-        dataIndex: 'price',
-    },
-    {
-        title: 'Ações',
-        key: 'action',
-        render: () => (
-            <>
-                <Tooltip title="Editar anúncio">
-                    <Button type='primary' style={{ marginRight: '1rem' }}>
-                        <EditOutlined />
-                    </Button>
-                </Tooltip>
-                <Popconfirm
-                    title="Deseja deletar o anúncio?"
-                    onConfirm={confirm}
-                    okText="Sim"
-                    cancelText="Não"
-                >
+
+
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [brand, setBrand] = useState('')
+    const [model, setModel] = useState('')
+    const [year, setYear] = useState('')
+    const [price, setPrice] = useState('')
+    const [color, setColor] = useState('')
+    const [mileage, setMileage] = useState(0)
+    const [licensePlate, setLicensePlate] = useState('')
+    const [city, setCity] = useState('')
+
+
+    const columns = [
+        {
+            title: 'Marca',
+            dataIndex: 'brand',
+            key: 'brand',
+        },
+        {
+            title: 'Modelo',
+            dataIndex: 'model',
+            key: 'model',
+        },
+        {
+            title: 'Ano',
+            dataIndex: 'year',
+            key: 'year',
+        },
+        {
+            title: 'Preço',
+            key: 'price',
+            dataIndex: 'price',
+        },
+        {
+            title: 'Ações',
+            key: 'action',
+            render: (car: any) => (
+                <>
+                    <Tooltip title="Editar anúncio">
+                        <Button type='primary' style={{ marginRight: '1rem' }}>
+                            <EditOutlined />
+                        </Button>
+                    </Tooltip>
                     <Tooltip title="Deletar anúncio">
-                        <Button danger>
+                        <Button danger onClick={() => deleteCar(car.id)}>
                             <DeleteOutlined />
                         </Button>
                     </Tooltip>
-                </Popconfirm>
-            </>
-        )
-    },
-];
+                </>
+            )
+        },
+    ]
 
-const data = [
-    {
-        key: '1',
-        brand: 'Renault',
-        model: 'Kwid',
-        year: '2022',
-        price: 'R$ 60.000,00',
-    },
-    {
-        key: '2',
-        brand: 'Renault',
-        model: 'Kwid',
-        year: '2022',
-        price: 'R$ 60.000,00',
-    },
-    {
-        key: '3',
-        brand: 'Renault',
-        model: 'Kwid',
-        year: '2022',
-        price: 'R$ 60.000,00',
-    },
-];
+    const data = cars.map(car => (
 
-
-export function Admin() {
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
+        {
+            id: car.id,
+            brand: car.brand,
+            model: car.model,
+            year: car.year,
+            price: car.price,
+        }
+    ))
 
     const showModal = () => {
         setIsModalVisible(true);
     };
 
-    const handleOk = () => {
+    async function deleteCar(id: string) {
+        console.log(id)
+        const carDoc = doc(db, "cars", id);
+        await deleteDoc(carDoc)
+    }
+
+    const createUser = async () => {
+        const carsCollectionRef = collection(db, "cars");
+        await addDoc(carsCollectionRef, { brand: brand, model: model, year: year, price: price, color: color, mileage: mileage, licensePlate: licensePlate, city: city })
         setIsModalVisible(false);
-    };
+    }
 
     const handleCancel = () => {
         setIsModalVisible(false);
@@ -129,8 +140,11 @@ export function Admin() {
                 title="Novo Anúncio"
                 centered
                 visible={isModalVisible}
-                onOk={handleOk} onCancel={handleCancel}
+                onCancel={handleCancel}
                 width={800}
+                footer={[
+                    <Button type='primary' key='submit' htmlType='submit' onClick={createUser}>Cadastrar</Button>
+                ]}
             >
                 <Form
                     labelCol={{ span: 4 }}
@@ -138,28 +152,28 @@ export function Admin() {
                     layout="horizontal"
                 >
                     <Form.Item label="Marca">
-                        <Input />
+                        <Input value={brand} onChange={event => setBrand(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Modelo">
-                        <Input />
+                        <Input value={model} onChange={event => setModel(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Ano">
-                        <Input />
+                        <Input value={year} onChange={event => setYear(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Preço">
-                        <Input />
+                        <Input value={price} onChange={event => setPrice(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Cor">
-                        <Input />
+                        <Input value={color} onChange={event => setColor(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Km Rodados">
-                        <InputNumber controls={false} />
+                        <Input value={mileage} onChange={event => setMileage(Number(event.target.value))} />
                     </Form.Item>
                     <Form.Item label="Placa">
-                        <Input />
+                        <Input value={licensePlate} onChange={event => setLicensePlate(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Cidade">
-                        <Input />
+                        <Input value={city} onChange={event => setCity(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Fotos">
                         <Button
