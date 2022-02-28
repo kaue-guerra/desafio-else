@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
 import { HomeOutlined, CarOutlined, FormOutlined } from '@ant-design/icons';
 
-import './style.css';
-
 export function Header() {
     return (
         <Menu mode='horizontal' style={{ textAlign: 'center' }} >

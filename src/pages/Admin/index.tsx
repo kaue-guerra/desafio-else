@@ -1,11 +1,11 @@
-import { FormEvent, useContext, useState } from 'react';
-import { Input, Table, Button, Popconfirm, message, Tooltip, Modal, Form, InputNumber } from 'antd';
+import { useContext, useState } from 'react';
+import { Input, Table, Button, Tooltip, Modal, Form } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import './style.css';
 
 
 import { db } from '../../firebase-config'
-import { collection, getDocs, addDoc, doc, deleteDoc } from '@firebase/firestore';
+import { collection, addDoc, doc, deleteDoc } from '@firebase/firestore';
 import { CarsContext } from '../../context/CarsContext';
 
 const { Search } = Input;
@@ -26,16 +26,8 @@ interface Car {
     created_at: Date;
 }
 
-function confirm(e: any) {
-    console.log(e);
-    message.success('Anúncio deletado com sucesso');
-}
-
 export function Admin() {
     const cars = useContext(CarsContext)
-
-
-
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [brand, setBrand] = useState('')
@@ -72,7 +64,7 @@ export function Admin() {
         {
             title: 'Ações',
             key: 'action',
-            render: (car: any) => (
+            render: (car: Car) => (
                 <>
                     <Tooltip title="Editar anúncio">
                         <Button type='primary' style={{ marginRight: '1rem' }}>
@@ -105,7 +97,6 @@ export function Admin() {
     };
 
     async function deleteCar(id: string) {
-        console.log(id)
         const carDoc = doc(db, "cars", id);
         await deleteDoc(carDoc)
     }

@@ -1,15 +1,17 @@
-import React from 'react';
 import { Header } from './components/Header'
 import './styles/global.css'
 
 import { Router } from "./router";
-import { CarsContext, CarsProvider } from './context/CarsContext';
+import { CarsProvider } from './context/CarsContext';
+import { ModalProvider } from './context/ModalContext';
 
 function App() {
   return (
     <CarsProvider>
-      <Header />
-      <Router />
+      <ModalProvider>
+        <Header />
+        <Router />
+      </ModalProvider>
     </CarsProvider>
   );
 }
