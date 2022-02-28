@@ -143,28 +143,28 @@ export function Admin() {
                     layout="horizontal"
                 >
                     <Form.Item label="Marca">
-                        <Input value={brand} onChange={event => setBrand(event.target.value)} />
+                        <Input required placeholder='Marca do carro' value={brand} onChange={event => setBrand(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Modelo">
-                        <Input value={model} onChange={event => setModel(event.target.value)} />
+                        <Input required placeholder='Modelo do carro' value={model} onChange={event => setModel(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Ano">
-                        <Input value={year} onChange={event => setYear(event.target.value)} />
+                        <Input required placeholder='Ano do carro' value={year} onChange={event => setYear(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Preço">
-                        <Input value={price} onChange={event => setPrice(event.target.value)} />
+                        <Input required placeholder='Preço' value={price} onChange={event => setPrice(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Cor">
-                        <Input value={color} onChange={event => setColor(event.target.value)} />
+                        <Input required placeholder='Cor' value={color} onChange={event => setColor(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Km Rodados">
-                        <Input value={mileage} onChange={event => setMileage(Number(event.target.value))} />
+                        <Input required placeholder='Km Rodados' value={mileage} onChange={event => setMileage(Number(event.target.value))} />
                     </Form.Item>
                     <Form.Item label="Placa">
-                        <Input value={licensePlate} onChange={event => setLicensePlate(event.target.value)} />
+                        <Input required placeholder='Placa' value={licensePlate} onChange={event => setLicensePlate(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Cidade">
-                        <Input value={city} onChange={event => setCity(event.target.value)} />
+                        <Input required placeholder='Cidade' value={city} onChange={event => setCity(event.target.value)} />
                     </Form.Item>
                     <Form.Item label="Fotos">
                         <Button
